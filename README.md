@@ -33,7 +33,7 @@ Sangat cocok digunakan sebagai:
 
 ## 🌐 Demo
 
-📷 Coming Soon / Atur sesuai kebutuhan kamu.  
+📷 https://gallery-foto-love.vercel.app/  
 Kamu bisa host di GitHub Pages dengan mudah dan share link-nya ke orang spesial kamu 💝
 
 ---
