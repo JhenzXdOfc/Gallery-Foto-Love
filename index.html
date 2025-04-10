@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Foto Kita Berdua</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+ 
+        body {
+            background-color: #ffd6e7;
+            overflow-x: hidden;
+        }
+ 
+        /* Home Page Styles */
+        .home-container {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: url('/api/placeholder/800/600') center/cover;
+            position: relative;
+            transition: opacity 1s ease;
+        }
+ 
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 64, 129, 0.6);
+            z-index: 1;
+        }
+ 
+        .home-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+ 
+        .home-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+ 
+        .sub-title {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+ 
+        .enter-btn {
+            background-color: white;
+            color: #ff4081;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, background-color 0.3s;
+            animation: bounce 2s infinite;
+        }
+ 
+        .enter-btn:hover {
+            transform: scale(1.1);
+            background-color: #f8f8f8;
+        }
+ 
+        /* Gallery Styles */
+        .gallery-container {
+            display: none;
+            padding: 20px;
+            min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+ 
+        .gallery-header {
+            color: #ff4081;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+ 
+        .slider-container {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+            height: 400px;
+            margin: 20px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background: white;
+        }
+ 
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+            width: 100%;
+        }
+ 
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+ 
+        .photo-frame {
+            width: 85%;
+            height: 85%;
+            position: relative;
+            border: 15px solid #ffb6c1;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+ 
+        .photo-frame img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+ 
+        .slider-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+ 
+        .nav-btn {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin: 0 10px;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, background-color 0.3s;
+        }
+ 
+        .nav-btn:hover {
+            transform: scale(1.1);
+            background-color: #e91e63;
+        }
+ 
+        .decoration {
+            position: absolute;
+            z-index: 10;
+        }
+ 
+        .heart {
+            position: absolute;
+            background-color: #ff4081;
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            transform: rotate(-45deg);
+        }
+ 
+        .heart:before, .heart:after {
+            content: "";
+            background-color: #ff4081;
+            border-radius: 50%;
+            height: 30px;
+            position: absolute;
+            width: 30px;
+        }
+ 
+        .heart:before {
+            top: -15px;
+            left: 0;
+        }
+ 
+        .heart:after {
+            left: 15px;
+            top: 0;
+        }
+ 
+        .caption {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background-color: rgba(255, 64, 129, 0.7);
+            color: white;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 0 0 10px 10px;
+        }
+ 
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+ 
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #ffb6c1;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+ 
+        .dot.active {
+            background-color: #ff4081;
+        }
+ 
+        .back-btn {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+ 
+        .back-btn:hover {
+            background-color: #e91e63;
+        }
+ 
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+ 
+        .music-icon {
+            font-size: 24px;
+            color: #ff4081;
+        }
+ 
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+ 
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+ 
+        .floating-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+ 
+        .floating-heart {
+            position: absolute;
+            color: #ff4081;
+            font-size: 20px;
+            animation: float 10s linear infinite;
+            opacity: 0.7;
+        }
+ 
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 1; }
+            100% { transform: translateY(-20vh) translateX(20px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Page -->
+    <div class="home-container" id="home-page">
+        <div class="overlay"></div>
+        <div class="home-content">
+            <h1 class="home-title">❤️ Kenangan Indah Kita ❤️</h1>
+            <p class="sub-title">Klik tombol di bawah untuk melihat momen-momen spesial kita</p>
+            <button class="enter-btn" id="enter-btn">Masuk ke Galeri</button>
+        </div>
+        <div class="floating-hearts" id="floating-hearts"></div>
+    </div>
+ 
+    <!-- Gallery Page -->
+    <div class="gallery-container" id="gallery-page">
+        <h1 class="gallery-header">❤️ Galeri Foto Kita Berdua ❤️</h1>
+ 
+        <div class="slider-container">
+            <div class="slider" id="slider">
+                <!-- Slide 1 -->
+                <div class="slide">
+                    <div class="photo-frame">
+                        <img src="/api/placeholder/500/350" alt="Foto kita">
+                        <div class="caption">Pertama kali kita jalan bareng</div>
+                    </div>
+                    <div class="decoration heart" style="top: 20px; right: 20px;"></div>
+                </div>
+ 
+                <!-- Slide 2 -->
+                <div class="slide">
+                    <div class="photo-frame">
+                        <img src="/api/placeholder/500/350" alt="Foto kita">
+                        <div class="caption">Hari ulang tahun kamu</div>
+                    </div>
+                    <div class="decoration heart" style="bottom: 20px; left: 20px;"></div>
+                </div>
+ 
+                <!-- Slide 3 -->
+                <div class="slide">
+                    <div class="photo-frame">
+                        <img src="/api/placeholder/500/350" alt="Foto kita">
+                        <div class="caption">Weekend di pantai</div>
+                    </div>
+                    <div class="decoration heart" style="top: 20px; left: 20px;"></div>
+                </div>
+ 
+                <!-- Slide 4 -->
+                <div class="slide">
+                    <div class="photo-frame">
+                        <img src="/api/placeholder/500/350" alt="Foto kita">
+                        <div class="caption">Dinner di tempat favorit kita</div>
+                    </div>
+                    <div class="decoration heart" style="bottom: 20px; right: 20px;"></div>
+                </div>
+ 
+                <!-- Slide 5 -->
+                <div class="slide">
+                    <div class="photo-frame">
+                        <img src="/api/placeholder/500/350" alt="Foto kita">
+                        <div class="caption">Liburan ke gunung</div>
+                    </div>
+                    <div class="decoration heart" style="top: 30px; right: 30px;"></div>
+                </div>
+            </div>
+ 
+            <div class="dots-container" id="dots-container"></div>
+        </div>
+ 
+        <div class="slider-nav">
+            <button class="nav-btn" id="prev">❮</button>
+            <button class="nav-btn" id="next">❯</button>
+        </div>
+ 
+        <button class="back-btn" id="back-btn">Kembali ke Home</button>
+    </div>
+ 
+    <!-- Music Control -->
+    <div class="music-control" id="music-control">
+        <div class="music-icon">♫</div>
+    </div>
+ 
+    <!-- Audio Element -->
+    <audio id="background-music" loop>
+        <source src="https://cdnjs.cloudflare.com/ajax/libs/music-metadata-browser/2.5.6/example_audio/samples/Miaow-01-Tempered-song.mp3" type="audio/mpeg">
+    </audio>
+ 
+    <script>
+ 
+        const homePage = document.getElementById('home-page');
+        const galleryPage = document.getElementById('gallery-page');
+        const enterBtn = document.getElementById('enter-btn');
+        const backBtn = document.getElementById('back-btn');
+        const musicControl = document.getElementById('music-control');
+        const backgroundMusic = document.getElementById('background-music');
+        const floatingHearts = document.getElementById('floating-hearts');
+ 
+ 
+        const slider = document.getElementById('slider');
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+        const dotsContainer = document.getElementById('dots-container');
+ 
+        let currentSlide = 0;
+        let slidesCount = slides.length;
+        let musicPlaying = false;
+        let slideInterval;
+ 
+ 
+        function createHearts() {
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('floating-heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (5 + Math.random() * 10) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                floatingHearts.appendChild(heart);
+            }
+        }
+ 
+ 
+        function createDots() {
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < slidesCount; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (i === currentSlide) {
+                    dot.classList.add('active');
+                }
+                dot.addEventListener('click', () => {
+                    goToSlide(i);
+                });
+                dotsContainer.appendChild(dot);
+            }
+        }
+ 
+ 
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+            updateDots();
+        }
+ 
+ 
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+ 
+ 
+        function toggleMusic() {
+            if (musicPlaying) {
+                backgroundMusic.pause();
+                musicControl.querySelector('.music-icon').innerHTML = '♫';
+            } else {
+                backgroundMusic.play();
+                musicControl.querySelector('.music-icon').innerHTML = '⏸';
+            }
+            musicPlaying = !musicPlaying;
+        }
+ 
+ 
+        function startAutoSlide() {
+            slideInterval = setInterval(() => {
+                currentSlide = (currentSlide === slidesCount - 1) ? 0 : currentSlide + 1;
+                goToSlide(currentSlide);
+            }, 5000);
+        }
+ 
+ 
+        function stopAutoSlide() {
+            clearInterval(slideInterval);
+        }
+ 
+ 
+        function showGallery() {
+            homePage.style.opacity = '0';
+            setTimeout(() => {
+                homePage.style.display = 'none';
+                galleryPage.style.display = 'flex';
+                setTimeout(() => {
+                    galleryPage.style.opacity = '1';
+                }, 50);
+            }, 1000);
+ 
+ 
+            if (!musicPlaying) {
+                toggleMusic();
+            }
+ 
+ 
+            startAutoSlide();
+        }
+ 
+ 
+        function showHome() {
+            galleryPage.style.opacity = '0';
+            stopAutoSlide();
+            setTimeout(() => {
+                galleryPage.style.display = 'none';
+                homePage.style.display = 'flex';
+                setTimeout(() => {
+                    homePage.style.opacity = '1';
+                }, 50);
+            }, 1000);
+        }
+ 
+ 
+        enterBtn.addEventListener('click', showGallery);
+        backBtn.addEventListener('click', showHome);
+        musicControl.addEventListener('click', toggleMusic);
+ 
+ 
+        prevBtn.addEventListener('click', () => {
+            stopAutoSlide();
+            currentSlide = (currentSlide === 0) ? slidesCount - 1 : currentSlide - 1;
+            goToSlide(currentSlide);
+            startAutoSlide();
+        });
+ 
+ 
+        nextBtn.addEventListener('click', () => {
+            stopAutoSlide();
+            currentSlide = (currentSlide === slidesCount - 1) ? 0 : currentSlide + 1;
+            goToSlide(currentSlide);
+            startAutoSlide();
+        });
+ 
+ 
+        window.addEventListener('DOMContentLoaded', () => {
+            createDots();
+            createHearts();
+ 
+ 
+            document.addEventListener('click', function audioCheck() {
+                if (!musicPlaying) {
+                    toggleMusic();
+                }
+                document.removeEventListener('click', audioCheck);
+            }, { once: true });
+        });
+    </script>
+</body>
+</html>
